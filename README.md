@@ -1,35 +1,35 @@
-# SharkFinn Learning — Full API on Railway
+# 🦈 SharkFinn Learning — Commercial Release
 
-Endpoints implemented: health, children, sessions, activity-blocks, social-stories, visual-schedules, rewards & redemption.
+Proprietary educational platform developed by **Stefan Neale**.
 
-## Quick Start
+## 💼 Buy or Deploy
+
+- 🛒 **Commercial license / SaaS access:** Available via [contact@youraitopweb.com.au](mailto:contact@youraitopweb.com.au)
+- 🏫 **Educational or white-label use:** Schools or therapy providers can license hosted versions.
+- ⚙️ **Self-deployment:** You may fork this repo for evaluation, but production hosting requires a commercial license.
+
+© 2025 Stefan Neale — All Rights Reserved.
+
+## 🚀 Quick Deploy on Railway
+
+1. Push this repo to GitHub (private or public).
+2. On [Railway.app](https://railway.app):
+   - Create new project → **Deploy from GitHub**
+   - Add environment variables:
+     - `PORT = 3000`
+     - `DATABASE_URL = postgresql://...sslmode=require`
+3. Deploy and open `/api/health` to verify.
+
+## ⚙️ Local Development
+
 ```bash
 npm install
 cp .env.example .env
-# Fill DATABASE_URL (Neon) with ?sslmode=require
 npm start
-# http://localhost:3000
+# open http://localhost:3000
 ```
 
-## Deploy on Railway (GUI)
-1) Push this repo to GitHub (private).  
-2) Railway → New Project → Deploy from GitHub.  
-3) Add Variables: `PORT=3000`, `DATABASE_URL=postgresql://...sslmode=require`.  
-4) Open `/api/health`.
+## 🔒 License & Legal
 
-## Deploy on Railway (CLI)
-```bash
-npm i -g @railway/cli
-railway login
-railway init
-railway variables set PORT=3000
-railway variables set DATABASE_URL="postgresql://...sslmode=require"
-railway up
-```
-
-## GitHub Actions (optional)
-- Add repo secrets: `RAILWAY_TOKEN`, `RAILWAY_SERVICE_ID`.
-- Push to `main` and it will deploy.
-
-## Schema
-See `schema.sql`. Tables are auto-created on boot.
+This repository is licensed under a proprietary commercial license.
+See [LICENSE](LICENSE) and [EULA.md](EULA.md) for details.
