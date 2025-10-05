@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Subscribe – SharkFinn Learning</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      margin: 0;
+      padding: 2rem;
+      background: #f9fafb;
+      color: #111;
+    }
+    .card {
+      max-width: 500px;
+      margin: 4rem auto;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      padding: 2rem;
+      text-align: center;
+    }
+    h1 {
+      margin-top: 0;
+    }
+    p {
+      color: #374151;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Subscribe to SharkFinn Learning</h1>
+    <p>$4.99 AUD per month · Cancel anytime</p>
+    <div id="paypal-button-container-P-75D815124A927113TNDRCKOA"></div>
+  </div>
+
+  <script src="https://www.paypal.com/sdk/js?client-id=Ac1yeIp0MCSFYpkxfdTvyJZoQVKdek0WkR-9T8yCWE3CvB9lw5SdGSrHxFCA5hvq7ElEi5zjYd2h07Jh&vault=true&intent=subscription" data-sdk-integration-source="button-factory"></script>
+
+  <script>
+    paypal.Buttons({
+      style: {
+          shape: 'rect',
+          color: 'gold',
+          layout: 'vertical',
+          label: 'subscribe'
+      },
+      createSubscription: function(data, actions) {
+        return actions.subscription.create({
+          plan_id: 'P-75D815124A927113TNDRCKOA'
+        });
+      },
+      onApprove: function(data, actions) {
+        alert('✅ Subscription active! ID: ' + data.subscriptionID);
