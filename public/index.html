@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SharkFinn Learning</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 0; padding: 2rem; }
+    .card { max-width: 900px; margin: 0 auto; padding: 1.5rem; border: 1px solid #e5e7eb; border-radius: 12px; }
+    button { padding: .6rem 1rem; border-radius: 8px; border: 1px solid #d1d5db; cursor: pointer; margin-right: .5rem; margin-bottom: .5rem; }
+    pre { background: #0b1021; color: #c9d1d9; padding: 1rem; border-radius: 10px; overflow: auto; min-height: 120px; }
+    .row { margin-bottom: 1rem; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>🦈 SharkFinn Learning — API tester</h1>
+    <div class="row">
+      <button data-req="GET /api/health">Health</button>
+      <button data-req="GET /api/children">Children</button>
+      <button data-req="POST /api/children">Add Child</button>
+      <button data-req="GET /api/rewards">Rewards</button>
+      <button data-req="GET /api/social-stories">Social Stories</button>
+      <button data-req="GET /api/visual-schedules">Visual Schedules</button>
+    </div>
+    <pre id="out">Click a button to ping the API…</pre>
+  </div>
+  <script>
+    const out = document.getElementById('out');
+    const pretty = (o) => JSON.stringify(o, null, 2);
+    async function send(method, url, body) {
+      const init = { method, headers: { 'Content-Type': 'application/json' } };
+      if (body) init.body = JSON.stringify(body);
+      const r = await fetch(url, init);
+      const j = await r.json();
+      return j;
+    }
+    document.querySelectorAll('button[data-req]').forEach(btn => {
+      btn.onclick = async () => {
+        const [method, url] = btn.dataset.req.split(' ');
+        out.textContent = `Calling ${method} ${url}…`;
+        try {
+          let body = null;
+          if (method === 'POST' && url === '/api/children') body = { name: 'New Learner', age: 6 };
+          const j = await send(method, url, body);
+          out.textContent = pretty(j);
+        } catch (e) { out.textContent = e.message; }
+      }
+    });
+  </script>
+</body>
+</html>
