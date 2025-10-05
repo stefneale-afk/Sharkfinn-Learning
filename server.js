@@ -11,7 +11,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
-// ✅ Use Railway's injected port; fall back to 8080 locally
+// Use Railway's injected port; fall back to 8080 locally
 const PORT = Number(process.env.PORT) || 8080;
 
 app.use(cors());
@@ -27,7 +27,7 @@ if (hasDb) {
     connectionString: process.env.DATABASE_URL,
     ssl: process.env.DATABASE_URL.includes('sslmode=require')
       ? { rejectUnauthorized: false }
-      : undefined
+      : undefined,
   });
 
   const bootstrap = async () => {
@@ -93,7 +93,8 @@ if (hasDb) {
     // Seed a couple of rewards if empty
     await pool.query(`
       INSERT INTO rewards(name, cost)
-      SELECT x.name, x.cost FROM (VALUES ('Sticker Pack', 5), ('Extra Screen Time', 10)) AS x(name, cost)
+      SELECT x.name, x.cost
+      FROM (VALUES ('Sticker Pack', 5), ('Extra Screen Time', 10)) AS x(name, cost)
       WHERE NOT EXISTS (SELECT 1 FROM rewards);
     `);
   };
