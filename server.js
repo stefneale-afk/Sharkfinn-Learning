@@ -11,7 +11,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+// ✅ Use Railway's injected port; fall back to 8080 locally
+const PORT = Number(process.env.PORT) || 8080;
 
 app.use(cors());
 app.use(express.json());
@@ -24,7 +25,9 @@ let pool = null;
 if (hasDb) {
   pool = new Pool({
     connectionString: process.env.DATABASE_URL,
-    ssl: process.env.DATABASE_URL.includes('sslmode=require') ? { rejectUnauthorized: false } : undefined
+    ssl: process.env.DATABASE_URL.includes('sslmode=require')
+      ? { rejectUnauthorized: false }
+      : undefined
   });
 
   const bootstrap = async () => {
@@ -97,7 +100,8 @@ if (hasDb) {
   bootstrap().catch(err => console.error('DB bootstrap error:', err));
 }
 
-const notImplemented = (req, res) => res.status(501).json({ ok: false, error: 'Not implemented (no DB configured).' });
+const notImplemented = (req, res) =>
+  res.status(501).json({ ok: false, error: 'Not implemented (no DB configured).' });
 
 // --- Health ---
 app.get('/api/health', async (req, res) => {
@@ -105,7 +109,9 @@ app.get('/api/health', async (req, res) => {
     if (!hasDb) return res.json({ ok: true, db: false, status: 'healthy (no DB configured)' });
     const r = await pool.query('SELECT NOW() now');
     res.json({ ok: true, db: true, now: r.rows[0].now });
-  } catch (e) { res.status(500).json({ ok: false, error: e.message }); }
+  } catch (e) {
+    res.status(500).json({ ok: false, error: e.message });
+  }
 });
 
 // --- Children ---
@@ -114,7 +120,9 @@ app.get('/api/children', async (req, res) => {
     if (!hasDb) return res.json([{ id: 1, name: 'Sample Child', age: 6 }]);
     const r = await pool.query('SELECT id, name, age, created_at FROM children ORDER BY id ASC');
     res.json(r.rows);
-  } catch (e) { res.status(500).json({ ok: false, error: e.message }); }
+  } catch (e) {
+    res.status(500).json({ ok: false, error: e.message });
+  }
 });
 
 app.get('/api/children/:id', async (req, res) => {
@@ -123,7 +131,9 @@ app.get('/api/children/:id', async (req, res) => {
     const r = await pool.query('SELECT id, name, age, created_at FROM children WHERE id=$1', [req.params.id]);
     if (!r.rows.length) return res.status(404).json({ ok: false, error: 'Not found' });
     res.json(r.rows[0]);
-  } catch (e) { res.status(500).json({ ok: false, error: e.message }); }
+  } catch (e) {
+    res.status(500).json({ ok: false, error: e.message });
+  }
 });
 
 app.post('/api/children', async (req, res) => {
@@ -136,7 +146,9 @@ app.post('/api/children', async (req, res) => {
       [name, age ?? 5]
     );
     res.status(201).json(r.rows[0]);
-  } catch (e) { res.status(500).json({ ok: false, error: e.message }); }
+  } catch (e) {
+    res.status(500).json({ ok: false, error: e.message });
+  }
 });
 
 // --- Sessions ---
@@ -150,7 +162,9 @@ app.post('/api/sessions', async (req, res) => {
       [child_id, notes ?? null]
     );
     res.status(201).json(r.rows[0]);
-  } catch (e) { res.status(500).json({ ok: false, error: e.message }); }
+  } catch (e) {
+    res.status(500).json({ ok: false, error: e.message });
+  }
 });
 
 app.patch('/api/sessions/:id', async (req, res) => {
@@ -163,7 +177,9 @@ app.patch('/api/sessions/:id', async (req, res) => {
     );
     if (!r.rows.length) return res.status(404).json({ ok: false, error: 'Not found' });
     res.json(r.rows[0]);
-  } catch (e) { res.status(500).json({ ok: false, error: e.message }); }
+  } catch (e) {
+    res.status(500).json({ ok: false, error: e.message });
+  }
 });
 
 // --- Activity Blocks ---
@@ -177,7 +193,9 @@ app.post('/api/activity-blocks', async (req, res) => {
       [session_id, type, payload ?? {}]
     );
     res.status(201).json(r.rows[0]);
-  } catch (e) { res.status(500).json({ ok: false, error: e.message }); }
+  } catch (e) {
+    res.status(500).json({ ok: false, error: e.message });
+  }
 });
 
 // --- Social Stories ---
@@ -186,7 +204,9 @@ app.get('/api/social-stories', async (req, res) => {
   try {
     const r = await pool.query('SELECT * FROM social_stories ORDER BY id ASC');
     res.json(r.rows);
-  } catch (e) { res.status(500).json({ ok: false, error: e.message }); }
+  } catch (e) {
+    res.status(500).json({ ok: false, error: e.message });
+  }
 });
 
 app.post('/api/social-stories', async (req, res) => {
@@ -196,7 +216,9 @@ app.post('/api/social-stories', async (req, res) => {
     if (!title || !body) return res.status(400).json({ ok: false, error: 'title and body required' });
     const r = await pool.query('INSERT INTO social_stories(title, body) VALUES($1,$2) RETURNING *', [title, body]);
     res.status(201).json(r.rows[0]);
-  } catch (e) { res.status(500).json({ ok: false, error: e.message }); }
+  } catch (e) {
+    res.status(500).json({ ok: false, error: e.message });
+  }
 });
 
 // --- Visual Schedules ---
@@ -205,7 +227,9 @@ app.get('/api/visual-schedules', async (req, res) => {
   try {
     const r = await pool.query('SELECT * FROM visual_schedules ORDER BY id ASC');
     res.json(r.rows);
-  } catch (e) { res.status(500).json({ ok: false, error: e.message }); }
+  } catch (e) {
+    res.status(500).json({ ok: false, error: e.message });
+  }
 });
 
 // --- Rewards ---
@@ -214,7 +238,9 @@ app.get('/api/rewards', async (req, res) => {
   try {
     const r = await pool.query('SELECT * FROM rewards ORDER BY id ASC');
     res.json(r.rows);
-  } catch (e) { res.status(500).json({ ok: false, error: e.message }); }
+  } catch (e) {
+    res.status(500).json({ ok: false, error: e.message });
+  }
 });
 
 app.post('/api/rewards/redeem', async (req, res) => {
@@ -227,10 +253,12 @@ app.post('/api/rewards/redeem', async (req, res) => {
       [child_id, reward_id]
     );
     res.status(201).json(r.rows[0]);
-  } catch (e) { res.status(500).json({ ok: false, error: e.message }); }
+  } catch (e) {
+    res.status(500).json({ ok: false, error: e.message });
+  }
 });
 
-// SPA fallback
+// SPA fallback (serves index.html for non-API routes)
 app.get('*', (req, res, next) => {
   if (req.path.startsWith('/api/')) return next();
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
